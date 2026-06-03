@@ -1,8 +1,7 @@
 services:
-- type: web
-  name: quotex-bot-free
-  env: python
-  plan: free
-  buildCommand: pip install -r requirements.txt
-  startCommand: python main.py
-  autoDeploy: false
+    - type: worker
+    name: quotex-bot-free
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
