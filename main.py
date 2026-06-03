@@ -1,5 +1,6 @@
 import asyncio
 import os
+import threading
 from flask import Flask
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
@@ -8,31 +9,25 @@ app = Flask(__name__)
 TOKEN = os.environ.get('TELEGRAM_TOKEN')
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('البوت شغال ✅ ارسل /start')
+    await update.message.reply_text('البوت شغال 24 ساعة ✅')
+
+def run_bot():
+    print(f"التوكن موجود: {TOKEN[:10] if TOKEN else 'مفقود'}...")
+    if not TOKEN:
+        print("خطأ: حط التوكن في Environment")
+        return
+    
+    application = Application.builder().token(TOKEN).build()
+    application.add_handler(CommandHandler("start", start))
+    print("البوت اشتغل...")
+    application.run_polling()
 
 @app.route('/')
 def home():
-    return "البوت شغال 24 ساعة ✅"
-
-async def main():
-    if not TOKEN:
-        print("خطأ: التوكن مفقود!")
-        return
-    
-    print(f"التوكن موجود: {TOKEN[:10]}...")
-    application = Application.builder().token(TOKEN).build()
-    application.add_handler(CommandHandler("start", start))
-    
-    # نشغل Flask في الخلفية
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, lambda: app.run(host='0.0.0.0', port=10000, use_reloader=False))
-    
-    # نشغل البوت
-    await application.initialize()
-    await application.start()
-    await application.updater.start_polling()
-    print("البوت اشتغل...")
-    await application.updater.idle()
+    return "البوت شغال ✅"
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    # نشغل البوت في Thread لحاله
+    threading.Thread(target=run_bot, daemon=True).start()
+    # نشغل Flask عشان Render ما يطفي السيرفر
+    app.run(host='0.0.0.0', port=10000)
