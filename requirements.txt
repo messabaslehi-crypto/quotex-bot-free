@@ -1,0 +1,6 @@
+python-telegram-bot==21.7
+python-dotenv==1.0.1
+ta==0.11.0
+pandas==2.2.2
+numpy==1.26.4
+gunicorn==22.0.0
