@@ -1,27 +1,24 @@
 import os
-import traceback
+import asyncio
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("اهلا! البوت شغال ✅")
+    await update.message.reply_text("اهلا! البوت شغال 100% ✅")
 
-def main():
-    try:
-        if not TOKEN:
-            raise ValueError("TELEGRAM_TOKEN غير موجود في Environment Variables!")
-        
-        print(f"التوكن موجود: {TOKEN[:10]}...")
-        app = Application.builder().token(TOKEN).build()
-        app.add_handler(CommandHandler("start", start))
-        print("البوت اشتغل...")
-        app.run_polling(allowed_updates=Update.ALL_TYPES)
+async def main():
+    if not TOKEN:
+        print("خطأ: TELEGRAM_TOKEN غير موجود!")
+        return
     
-    except Exception as e:
-        print("خطأ فادح:")
-        traceback.print_exc()
+    print(f"التوكن موجود: {TOKEN[:10]}...")
+    app = Application.builder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    print("البوت اشتغل...")
+    
+    await app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
