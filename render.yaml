@@ -5,7 +5,4 @@ services:
   plan: free
   buildCommand: pip install -r requirements.txt
   startCommand: python main.py
-  autoDeploy: false
-  envVars:
-    - key: TELEGRAM_TOKEN
-    sync: false
+  autoDeploy:false
